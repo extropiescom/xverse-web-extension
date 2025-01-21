@@ -8,7 +8,9 @@ interface PopupOptions {
   skipPopupFallback?: boolean;
 }
 export default function popupCenter(options: PopupOptions): Promise<Windows.Window> {
-  const { url, w = 360, h = 600 } = options;
+  const { url } = options;
+  const w = 1360;
+  const h = 800;
   return new Promise((resolve) => {
     chrome.windows.getCurrent(async (win) => {
       // the farthest left/top sides of all displays
