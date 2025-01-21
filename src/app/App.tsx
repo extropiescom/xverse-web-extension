@@ -53,7 +53,7 @@ function App(): React.ReactNode {
                     <RouterProvider router={router} />
                     <Toaster
                       max={1}
-                      position="bottom-center"
+                      position="bottom-right"
                       toastOptions={{
                         duration: 2000,
                         success: {
