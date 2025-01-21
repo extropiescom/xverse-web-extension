@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "jsx": "react-jsx",
     "outDir": "build/js",
     "baseUrl": "./src",
@@ -29,7 +29,8 @@
       "@utils/*": ["app/utils/*"],
       "@core/*": ["app/core/*"],
       "@ui-library/*": ["app/ui-library/*"],
-      "@ui-components/*": ["app/ui-components/*"]
+      "@ui-components/*": ["app/ui-components/*"],
+      "react": [ "./node_modules/@types/react" ]
     }
   },
   "include": ["src", "tests", "styled.d.ts", "playwright.config.ts"]

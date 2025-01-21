@@ -10,8 +10,8 @@ import { devices } from 'theme';
 
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: space-around;
+  width: 360px;
   height: 100%;
   min-height: 100vh;
 `;
@@ -44,7 +44,6 @@ const RouteContainer = styled.div`
   }
 
   @media ${devices.min.md} {
-    width: 588px;
     min-height: 600px;
     max-height: 800px;
     margin-top: ${(props) => props.theme.space.m};

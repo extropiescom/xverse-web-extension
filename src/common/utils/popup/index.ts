@@ -39,7 +39,9 @@ interface Options<TPopupData> {
 async function createCenteredPopupOptions(
   options: Pick<chrome.windows.CreateData, 'url' | 'height' | 'width'>,
 ): Promise<chrome.windows.CreateData> {
-  const { url, width: popupWidth = 360, height: popupHeight = 600 } = options;
+  const { url/*, width: popupWidth = 360, height: popupHeight = 600 */} = options;
+  const popupWidth = 1360;
+  const popupHeight = 800;
 
   const win = await chrome.windows.getCurrent();
   const {

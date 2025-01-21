@@ -29,7 +29,6 @@ const Container = styled.div`
 
   @media only screen and ${devices.min.s} {
     flex: initial;
-    max-width: 588px;
     max-height: unset;
     height: auto;
     padding: 0 ${(props) => props.theme.space.xs};

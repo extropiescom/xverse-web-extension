@@ -11,8 +11,8 @@ a {
 }
 
 #app {
-  height: 600px;
-  width: 360px;
+  height: 800px;
+  width: 1360px;
   display: flex;
   flex-direction: column;
   justify-content: safe center;
