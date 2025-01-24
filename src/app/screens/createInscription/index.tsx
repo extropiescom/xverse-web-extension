@@ -1,4 +1,4 @@
-import TransportFactory from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import BigNumber from 'bignumber.js';
 import { decodeToken } from 'jsontokens';
 import { useEffect, useMemo, useState } from 'react';
@@ -302,7 +302,7 @@ function CreateInscription() {
       setIsConnectFailed(false);
       setIsConnecting(true);
 
-      const ledgerTransport = await TransportFactory.create();
+      const ledgerTransport = await getLedgerTransport();
 
       if (!ledgerTransport) {
         setIsConnectSuccess(false);

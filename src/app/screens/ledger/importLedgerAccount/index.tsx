@@ -2,7 +2,7 @@ import { getDeviceNewAccountIndex, getNewAccountId } from '@common/utils/ledger'
 import { delay } from '@common/utils/promises';
 import useWalletReducer from '@hooks/useWalletReducer';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { useTransition } from '@react-spring/web';
 import {
   LedgerErrors,
@@ -59,7 +59,7 @@ function ImportLedger(): JSX.Element {
   const importBtcAccounts = async (showAddress: boolean, masterFingerPrint?: string) => {
     let btcCreds;
     let ordinalsCreds;
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
     const newAccountId = getNewAccountId(ledgerAccountsList);
     setAccountId(newAccountId);
     const deviceNewAccountIndex = getDeviceNewAccountIndex(
@@ -133,7 +133,7 @@ function ImportLedger(): JSX.Element {
     const { deviceAccountIndex } = ledgerAccountsList[ledgerAccountsList.length - 1];
 
     setIsButtonDisabled(true);
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     try {
       const stacksCreds = await importStacksAccountFromLedger({
@@ -289,7 +289,7 @@ function ImportLedger(): JSX.Element {
   };
 
   const fetchMasterPubKey = async () => {
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
     const masterFingerPrint = await getMasterFingerPrint(transport);
     setMasterPubKey(masterFingerPrint);
     return masterFingerPrint;

@@ -9,7 +9,7 @@ import ActionButton from '@components/button';
 import LedgerConnectionView from '@components/ledger/connectLedgerView';
 import useSeedVault from '@hooks/useSeedVault';
 import useSelectedAccount from '@hooks/useSelectedAccount';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { animated, useSpring } from '@react-spring/web';
 import { AddressPurpose } from '@sats-connect/core';
 import SelectAccount from '@screens/connect/selectAccount';
@@ -203,7 +203,7 @@ function AuthenticationRequest() {
     }
     setIsButtonDisabled(true);
 
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     if (!transport) {
       setIsConnectSuccess(false);

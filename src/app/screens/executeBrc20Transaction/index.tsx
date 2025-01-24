@@ -3,7 +3,7 @@ import type { ConfirmationStatus } from '@components/loadingTransactionStatus/ci
 import useSelectedAccount from '@hooks/useSelectedAccount';
 import useTransactionContext from '@hooks/useTransactionContext';
 import useWalletSelector from '@hooks/useWalletSelector';
-import TransportFactory from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import {
   BRC20ErrorCode,
   ExecuteTransferProgressCodes,
@@ -108,7 +108,7 @@ function ExecuteBrc20Transaction() {
   const handleLedgerConnect = async () => {
     try {
       setIsConnecting(true);
-      const ledgerTransport = await TransportFactory.create();
+      const ledgerTransport = await getLedgerTransport();
 
       if (!ledgerTransport) {
         setIsConnectSuccess(false);

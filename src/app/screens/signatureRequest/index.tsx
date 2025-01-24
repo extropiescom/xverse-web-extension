@@ -17,7 +17,7 @@ import useSignatureRequest, {
 import useTrackMixPanelPageViewed from '@hooks/useTrackMixPanelPageViewed';
 import useWalletReducer from '@hooks/useWalletReducer';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import type { Return } from '@sats-connect/core';
 import { buf2hex, hashMessage, signStxMessage } from '@secretkeylabs/xverse-core';
 import type { SignaturePayload, StructuredDataSignaturePayload } from '@stacks/connect';
@@ -171,7 +171,7 @@ function SignatureRequest(): JSX.Element {
     }
     setIsButtonDisabled(true);
 
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     if (!transport) {
       setIsConnectSuccess(false);

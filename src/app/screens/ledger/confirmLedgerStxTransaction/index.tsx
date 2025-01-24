@@ -6,7 +6,8 @@ import ActionButton from '@components/button';
 import LedgerConnectionView from '@components/ledger/connectLedgerView';
 import useNetworkSelector from '@hooks/useNetwork';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
+import { type Transport } from '@secretkeylabs/xverse-core';
 import { useTransition } from '@react-spring/web';
 import {
   broadcastSignedTransaction,
@@ -107,7 +108,7 @@ function ConfirmLedgerStxTransaction(): JSX.Element {
     try {
       setIsButtonDisabled(true);
 
-      const transport = await Transport.create();
+      const transport = await getLedgerTransport();
 
       if (!transport) {
         setIsConnectSuccess(false);

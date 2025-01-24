@@ -1,5 +1,5 @@
 import { delay } from '@common/utils/promises';
-import TransportFactory from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { type Transport } from '@secretkeylabs/xverse-core';
 import Button from '@ui-library/button';
 import { useState } from 'react';
@@ -40,7 +40,7 @@ function LedgerSteps({ onConfirm, onCancel, txnToSignCount, txnSignIndex }: Prop
   const handleConnectAndConfirm = async () => {
     setIsButtonDisabled(true);
 
-    const transport = await TransportFactory.create();
+    const transport = await getLedgerTransport();
 
     if (!transport) {
       setIsConnectSuccess(false);

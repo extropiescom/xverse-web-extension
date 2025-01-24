@@ -7,7 +7,7 @@ import LedgerConnectionView from '@components/ledger/connectLedgerView';
 import useSeedVault from '@hooks/useSeedVault';
 import useSelectedAccount from '@hooks/useSelectedAccount';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import CollapsibleContainer from '@screens/signatureRequest/collapsableContainer';
 import SignatureRequestMessage from '@screens/signatureRequest/signatureRequestMessage';
 import {
@@ -108,7 +108,7 @@ function MessageSigning({
     }
     setIsButtonDisabled(true);
 
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     if (!transport) {
       setIsConnectSuccess(false);

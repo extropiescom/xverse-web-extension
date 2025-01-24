@@ -3,7 +3,7 @@ import ActionButton from '@components/button';
 import InfoContainer from '@components/infoContainer';
 import LedgerAddressComponent from '@components/ledger/ledgerAddressComponent';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { useTransition } from '@react-spring/web';
 import {
   importNativeSegwitAccountFromLedger,
@@ -92,7 +92,7 @@ function VerifyLedger(): JSX.Element {
   };
 
   const importBtcAccounts = async (showAddress: boolean) => {
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
     const addressIndex = selectedAccount?.deviceAccountIndex;
 
     if (isBitcoinSelected) {
@@ -143,7 +143,7 @@ function VerifyLedger(): JSX.Element {
 
   const importStxAccounts = async (showAddress: boolean) => {
     setIsButtonDisabled(true);
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
     const addressIndex = selectedAccount?.deviceAccountIndex;
 
     try {

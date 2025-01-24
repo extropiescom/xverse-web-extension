@@ -11,7 +11,7 @@ import useNetworkSelector from '@hooks/useNetwork';
 import useSeedVault from '@hooks/useSeedVault';
 import useSelectedAccount from '@hooks/useSelectedAccount';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { FadersHorizontal } from '@phosphor-icons/react';
 import type { StacksTransaction } from '@secretkeylabs/xverse-core';
 import {
@@ -266,7 +266,7 @@ function ConfirmStxTransactionComponent({
       return;
     }
     setIsButtonDisabled(true);
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     if (!transport) {
       setIsConnectSuccess(false);

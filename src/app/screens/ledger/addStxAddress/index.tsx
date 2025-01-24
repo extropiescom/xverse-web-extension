@@ -9,7 +9,7 @@ import LedgerAddressComponent from '@components/ledger/ledgerAddressComponent';
 import { useResetUserFlow } from '@hooks/useResetUserFlow';
 import useWalletReducer from '@hooks/useWalletReducer';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { useTransition } from '@react-spring/web';
 import {
   LedgerErrors,
@@ -92,7 +92,7 @@ function AddStxAddress(): JSX.Element {
 
   const importStxAccounts = async (showAddress: boolean) => {
     setIsButtonDisabled(true);
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
 
     try {
       const addressIndex = selectedAccount?.deviceAccountIndex;

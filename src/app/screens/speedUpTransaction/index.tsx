@@ -21,7 +21,7 @@ import useSeedVault from '@hooks/useSeedVault';
 import useSelectedAccount from '@hooks/useSelectedAccount';
 import useTransactionContext from '@hooks/useTransactionContext';
 import useWalletSelector from '@hooks/useWalletSelector';
-import Transport from '@ledgerhq/hw-transport-webusb';
+import { getLedgerTransport } from '@common/utils/transport';
 import { CarProfile, Lightning, RocketLaunch, ShootingStar } from '@phosphor-icons/react';
 import {
   broadcastSignedTransaction,
@@ -255,7 +255,7 @@ function SpeedUpTransactionScreen() {
 
   const handleConnectAndConfirm = async () => {
     setIsLedgerConnectButtonDisabled(true);
-    const transport = await Transport.create();
+    const transport = await getLedgerTransport();
     if (!transport) {
       setIsConnectSuccess(false);
       setIsConnectFailed(true);
