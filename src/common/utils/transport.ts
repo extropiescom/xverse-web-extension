@@ -1,4 +1,4 @@
-import type Transport from '@ledgerhq/hw-transport';
+import { type Transport } from '@secretkeylabs/xverse-core';
 
 interface TransportOptions {
     // /** 是否使用 Speculos 模拟器；默认为 false */
@@ -36,6 +36,6 @@ export async function getLedgerTransport({
   //   });
   // } else {
   const TransportWebUSB = await import('@ledgerhq/hw-transport-webusb').then((m) => m.default);
-  return await TransportWebUSB.create();
+  return await TransportWebUSB.create() as Transport;
   // }
 }
