@@ -3,10 +3,6 @@ import { type Transport } from '@secretkeylabs/xverse-core';
 
 import type { SpeculosHttpTransportOpts } from '@ledgerhq/hw-transport-node-speculos-http';
 
-import axios from "axios";
-
-axios.defaults.adapter = 'fetch';
-
 interface TransportOptions {
   /** 是否使用 Speculos 模拟器；默认为 false */
   useSpeculos?: boolean;
@@ -40,10 +36,6 @@ export async function getLedgerTransport({
   useSpeculos = true,
   apiPort = '3344',
 }: TransportOptions = {}): Promise<Transport> {
-  console.log(
-    '---------------------------------getLedgerTransport---------------------------------',
-  );
-
   let transport: Transport;
   if (useSpeculos) {
     transport = (await openSpeculosAndWait({

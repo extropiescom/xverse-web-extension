@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": true, // Consider changing to false if TypeScript adoption is complete
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": false, // Resolving conflict: setting this to false as it is in the second config
+    "moduleResolution": "node",
+    "pretty": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES6",
+    "declaration": true,
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "module": "commonjs",
+    "lib": ["DOM", "ES2017"],
+    "outDir": "lib"
+  },
+  "include": ["src/**/*"]
+}
