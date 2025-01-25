@@ -3,6 +3,10 @@ import { type Transport } from '@secretkeylabs/xverse-core';
 
 import type { SpeculosHttpTransportOpts } from '@ledgerhq/hw-transport-node-speculos-http';
 
+import axios from "axios";
+
+axios.defaults.adapter = 'fetch';
+
 interface TransportOptions {
   /** 是否使用 Speculos 模拟器；默认为 false */
   useSpeculos?: boolean;
@@ -22,6 +26,8 @@ async function openSpeculosAndWait(
     try {
       return await SpeculosTransport.open(opts);
     } catch (e) {
+      console.error(e);
+
       if (i > 50) {
         throw e;
       }
@@ -42,6 +48,7 @@ export async function getLedgerTransport({
   if (useSpeculos) {
     transport = (await openSpeculosAndWait({
       apiPort,
+      baseURL: `http://localhost:${apiPort || "5000"}`
     })) as Transport;
   } else {
     const TransportWebUSB = await import('@ledgerhq/hw-transport-webusb').then((m) => m.default);
