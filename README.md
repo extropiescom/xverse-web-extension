@@ -1,34 +1,26 @@
-# xverse-extension
-
-## Installing and Running
-
-### Procedures
-
-1. Check if your [Node.js](https://nodejs.org/) version is >= **18**.
-2. Clone this repository.
-3. Make sure you're logged in to the @secretkeylabs scope on the GitHub NPM package registry. See the [Guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token)
-   1. Create a GitHub personal access token (classic)
-   2. Run `npm login --scope=@secretkeylabs --registry=https://npm.pkg.github.com`
-   3. Username: GITHUB USERNAME
-      Password: PERSONAL_ACCESS_TOKEN
-      Email: PUBLIC-EMAIL-ADDRESS
-4. Add .env file (example: .env.example)
-5. Run `npm install` to install the dependencies.
-6. Run `npm start`
-7. Load your extension on Chrome following:
-   1. Access `chrome://extensions/`
-   2. Check `Developer mode`
-   3. Click on `Load unpacked extension`
-   4. Select the `build` folder.
-
-### Developing with local dependencies
-
-Use esm build, and reference your filesystem in package.json
-
-For example, if your xverse-core and xverse-web-extension are in same directory,
-make or pull your local changes to xverse-core, then:
-
+# 如何连接模拟器
+1. 点击 VSCode -> “Update Container”，在 terminal 获取命令，然后参考下面 mac 上的命令修改。主要得加上“-p 3344:5000”绑定。
+```bash
+xhost + ; docker run -p 3344:5000 --user $(id -u):$(id -g) --privileged -e DISPLAY='host.docker.internal:0' -v '/tmp/.X11-unix:/tmp/.X11-unix' -v '/Users/1mcat/Project/Ledger/app-bitcoin-new:/app' -t -d --name app-bitcoin-new-container ghcr.io/ledgerhq/ledger-app-builder/ledger-app-dev-tools:latest
 ```
-cd ../xverse-core && npm i && npm run build:esm && \
-cd $OLDPWD && npm i --legacy-peer-deps @secretkeylabs/xverse-core@../xverse-core && npm start
+
+2. open terminal
+```bash
+docker exec -it -u 0 app-bitcoin-new-container bash -c 'export BOLOS_SDK=$NANOSP_SDK && bash'  
 ```
+
+3. build
+```bash
+export BOLOS_SDK=$(echo $NANOSP_SDK) && make -C ./ -B -j  COIN=bitcoin_testnet
+```
+
+4. run emulator
+```bash
+speculos --model nanosp build/nanos2/bin/app.elf
+```
+
+5. npm install
+
+6. npm run start
+
+7. chrome 里 load extension
