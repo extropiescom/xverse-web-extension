@@ -52,7 +52,7 @@ function SignMessageRequest() {
         result: signMessageResult,
       });
     }
-    window.close();
+    // window.close();
   };
 
   const onSignedError = (err) => {
