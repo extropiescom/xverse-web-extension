@@ -138,6 +138,8 @@
     "husky": "^8.0.3",
     "knip": "^5.23.3",
     "lint-staged": "^13.2.3",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.2.3",
     "react-refresh": "^0.14.0",
@@ -151,6 +153,7 @@
     "type-fest": "^2.19.0",
     "typescript": "^5.5.4",
     "typescript-plugin-styled-components": "^3.0.0",
+    "url": "^0.11.4",
     "webpack": "5.95.0",
     "webpack-dev-server": "5.1.0"
   }

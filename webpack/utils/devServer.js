@@ -47,6 +47,10 @@ var server = new WebpackDevServer(
       'Access-Control-Allow-Origin': '*',
     },
     allowedHosts: 'all',
+    watchFiles: [
+      path.resolve(__dirname, 'node_modules/@secretkeylabs/**/*'),
+      path.resolve(__dirname, 'node_modules/@ledgerhq/**/*'),
+    ],
   },
   compiler,
 );

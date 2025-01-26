@@ -116,8 +116,14 @@ function makeConfig(opts) {
       fallback: {
         stream: require.resolve('stream-browserify'),
         crypto: require.resolve('crypto-browserify'),
+        os: require.resolve("os-browserify/browser"),
+        path: require.resolve('path-browserify'),
+        url: require.resolve("url/"),
         fs: false,
       },
+    },
+    watchOptions: {
+      ignored: /node_modules\/(?!(\@secretkeylabs|\@ledgerhq)\/).*/, // 忽略所有 node_modules，除了 @secretkeylabs/xverse-core 和 @ledgerhq 下的模块
     },
     plugins: [
       new ForkTsCheckerWebpackPlugin(),
