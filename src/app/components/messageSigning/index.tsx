@@ -151,7 +151,20 @@ function MessageSigning({
     }
   };
 
-  const confirmSignMessage = async () => {
+  const confirmSignMessage = async (mockLedger = false) => {
+    if (mockLedger) {
+      const transport = await getLedgerTransport();
+      return handleLedgerMessageSigning({
+        transport,
+        addressIndex: 0,
+        address,
+        networkType: network.type,
+        message,
+        protocol,
+        mock: false,
+      });
+    }
+
     const seedPhrase = await getSeed();
     return signMessage({
       accounts: accountsList,
