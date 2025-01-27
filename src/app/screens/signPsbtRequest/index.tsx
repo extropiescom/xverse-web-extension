@@ -73,11 +73,11 @@ function SignPsbtRequest() {
         ledgerTransport,
       });
       const response = await confirmSignPsbt(signedPsbt);
-      trackMixPanel(AnalyticsEvents.TransactionConfirmed, {
-        protocol: 'bitcoin',
-        action: 'sign-psbt',
-        wallet_type: selectedAccount?.accountType || 'software',
-      });
+      // trackMixPanel(AnalyticsEvents.TransactionConfirmed, {
+      //   protocol: 'bitcoin',
+      //   action: 'sign-psbt',
+      //   wallet_type: selectedAccount?.accountType || 'software',
+      // });
       if (ledgerTransport) {
         await ledgerTransport.close();
       }
