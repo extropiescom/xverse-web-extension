@@ -112,7 +112,7 @@ function SignPsbtRequest() {
           },
         });
       } else {
-        window.close();
+        // window.close();
       }
     } catch (err) {
       setIsSigning(false);
