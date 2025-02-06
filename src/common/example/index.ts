@@ -146,7 +146,23 @@ export async function signSlashingPath({
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
   keys.push(_formatKey(finalityProviderPk, isTestnet));
 
+  if (covenantThreshold < 1) {
+    throw new Error(
+      `Invalid value for covenantThreshold: ${covenantThreshold}. It should be greater than or equal to 1.`,
+    );
+  }
+
   const length = !covenantPks ? 0 : covenantPks!.length;
+  if (length < 1) {
+    throw new Error(`covenantPks must have at least 1 element. Current length: ${length}`);
+  }
+
+  if (length < covenantThreshold) {
+    throw new Error(
+      `The length of covenantPks (${length}) is less than the required covenantThreshold (${covenantThreshold}).`,
+    );
+  }
+
   for (let index = 0; index < length; index++) {
     const pk = covenantPks![index];
     keys.push(_formatKey(pk, isTestnet));
@@ -195,7 +211,24 @@ export async function signUnbondingPath({
   keys.push(_formatKey(leafHash, isTestnet));
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
+  if (covenantThreshold < 1) {
+    throw new Error(
+      `Invalid value for covenantThreshold: ${covenantThreshold}. It should be greater than or equal to 1.`,
+    );
+  }
+
   const length = !covenantPks ? 0 : covenantPks!.length;
+
+  if (length < 1) {
+    throw new Error(`covenantPks must have at least 1 element. Current length: ${length}`);
+  }
+
+  if (length < covenantThreshold) {
+    throw new Error(
+      `The length of covenantPks (${length}) is less than the required covenantThreshold (${covenantThreshold}).`,
+    );
+  }
+
   for (let index = 0; index < length; index++) {
     const pk = covenantPks![index];
     keys.push(_formatKey(pk, isTestnet));
