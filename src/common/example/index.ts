@@ -88,7 +88,7 @@ export async function signMessageECDSA({
   };
 }
 
-function formatKey(key: string | Buffer, isTestnet: boolean): string {
+function _formatKey(key: string | Buffer, isTestnet: boolean): string {
   return createExtendedPubkey(
     !isTestnet ? 'Mainnet' : 'Testnet',
     0,
@@ -137,14 +137,14 @@ export async function signSlashingPath({
   const { psbt, leafHash, finalityProviderPk, covenantThreshold, covenantPks } = params;
 
   const keys: string[] = [];
-  keys.push(formatKey(leafHash, isTestnet));
+  keys.push(_formatKey(leafHash, isTestnet));
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
-  keys.push(formatKey(finalityProviderPk, isTestnet));
+  keys.push(_formatKey(finalityProviderPk, isTestnet));
 
   const length = !covenantPks ? 0 : covenantPks!.length;
   for (let index = 0; index < length; index++) {
     const pk = covenantPks![index];
-    keys.push(formatKey(pk, isTestnet));
+    keys.push(_formatKey(pk, isTestnet));
   }
 
   const policy = new WalletPolicy(
@@ -190,13 +190,13 @@ export async function signUnbondingPath({
   const { psbt, leafHash, covenantThreshold, covenantPks } = params;
 
   const keys: string[] = [];
-  keys.push(formatKey(leafHash, isTestnet));
+  keys.push(_formatKey(leafHash, isTestnet));
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
   const length = !covenantPks ? 0 : covenantPks!.length;
   for (let index = 0; index < length; index++) {
     const pk = covenantPks![index];
-    keys.push(formatKey(pk, isTestnet));
+    keys.push(_formatKey(pk, isTestnet));
   }
 
   const policy = new WalletPolicy(
@@ -241,7 +241,7 @@ export async function signTimelockPath({
   const { psbt, leafHash, timelockBlocks } = params;
 
   const keys: string[] = [];
-  keys.push(formatKey(leafHash, isTestnet));
+  keys.push(_formatKey(leafHash, isTestnet));
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
   const policy = new WalletPolicy(
