@@ -102,24 +102,31 @@ function formatKey(key: string | Buffer, isTestnet: boolean): string {
   );
 }
 
+export function computeLeafHash(psbt: Uint8Array): Buffer {
+  const psbtBase64 = base64.encode(psbt);
+  const script = getTaprootScript(psbtBase64)!;
+  return getLeafHash(script);
+}
+
 export type SlashingPolicy = 'Stake / Step 1' | 'Stake / Step 2';
+export type SlashingParams = {
+  psbt: Uint8Array;
+  leafHash: Buffer;
+  finalityProviderPk: string;
+  covenantThreshold: number;
+  covenantPks?: string[];
+};
 
 export async function signSlashingPath({
   policyName,
   transport,
-  psbt,
-  finalityProviderPk,
-  covenantThreshold,
-  covenantPks,
+  params,
   derivationPath,
   isTestnet = false,
 }: {
   policyName: SlashingPolicy;
   transport: Transport;
-  psbt: Uint8Array;
-  finalityProviderPk: string;
-  covenantThreshold: number;
-  covenantPks?: string[];
+  params: SlashingParams;
   derivationPath: string;
   isTestnet: boolean;
 }): Promise<Transaction> {
@@ -127,9 +134,7 @@ export async function signSlashingPath({
   const masterFingerPrint = await app.getMasterFingerprint();
   const extendedPublicKey = await app.getExtendedPubkey(derivationPath);
 
-  const psbtBase64 = base64.encode(psbt);
-  const script = getTaprootScript(psbtBase64)!;
-  const leafHash = getLeafHash(script);
+  const { psbt, leafHash, finalityProviderPk, covenantThreshold, covenantPks } = params;
 
   const keys: string[] = [];
   keys.push(formatKey(leafHash, isTestnet));
@@ -158,21 +163,23 @@ export async function signSlashingPath({
 }
 
 export type UnbondingPolicy = 'Unbond' | undefined;
+export type UnbondingParams = {
+  psbt: Uint8Array;
+  leafHash: Buffer;
+  covenantThreshold: number;
+  covenantPks?: string[];
+};
 
 export async function signUnbondingPath({
   policyName = 'Unbond',
   transport,
-  psbt,
-  covenantThreshold,
-  covenantPks,
+  params,
   derivationPath,
   isTestnet = false,
 }: {
   policyName: UnbondingPolicy;
   transport: Transport;
-  psbt: Uint8Array;
-  covenantThreshold: number;
-  covenantPks?: string[];
+  params: UnbondingParams;
   derivationPath: string;
   isTestnet: boolean;
 }): Promise<Transaction> {
@@ -180,10 +187,7 @@ export async function signUnbondingPath({
   const masterFingerPrint = await app.getMasterFingerprint();
   const extendedPublicKey = await app.getExtendedPubkey(derivationPath);
 
-  const psbtBase64 = base64.encode(psbt);
-
-  const script = getTaprootScript(psbtBase64)!;
-  const leafHash = getLeafHash(script);
+  const { psbt, leafHash, covenantThreshold, covenantPks } = params;
 
   const keys: string[] = [];
   keys.push(formatKey(leafHash, isTestnet));
@@ -211,19 +215,22 @@ export async function signUnbondingPath({
 }
 
 export type TimelockPolicy = 'Withdraw' | undefined;
+export type TimelockParams = {
+  psbt: Uint8Array;
+  leafHash: Buffer;
+  timelockBlocks: number;
+};
 
 export async function signTimelockPath({
   policyName = 'Withdraw',
   transport,
-  psbt,
-  timelockBlocks,
+  params,
   derivationPath,
   isTestnet = false,
 }: {
   policyName: TimelockPolicy;
   transport: Transport;
-  psbt: Uint8Array;
-  timelockBlocks: number;
+  params: TimelockParams;
   derivationPath: string;
   isTestnet: boolean;
 }): Promise<Transaction> {
@@ -231,10 +238,7 @@ export async function signTimelockPath({
   const masterFingerPrint = await app.getMasterFingerprint();
   const extendedPublicKey = await app.getExtendedPubkey(derivationPath);
 
-  const psbtBase64 = base64.encode(psbt);
-
-  const script = getTaprootScript(psbtBase64)!;
-  const leafHash = getLeafHash(script);
+  const { psbt, leafHash, timelockBlocks } = params;
 
   const keys: string[] = [];
   keys.push(formatKey(leafHash, isTestnet));
