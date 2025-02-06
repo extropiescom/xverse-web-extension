@@ -118,14 +118,13 @@ async function _prepare(transport: Transport, derivationPath: string): Promise<s
 
 export type SlashingPolicy = 'Stake / Step 1' | 'Stake / Step 2';
 export type SlashingParams = {
-  psbt: Uint8Array;
   leafHash: Buffer;
   finalityProviderPk: string;
   covenantThreshold: number;
   covenantPks?: string[];
 };
 
-export async function signSlashingPath({
+export async function slashingPathPolicy({
   policyName,
   transport,
   params,
@@ -137,8 +136,8 @@ export async function signSlashingPath({
   params: SlashingParams;
   derivationPath: string;
   isTestnet: boolean;
-}): Promise<Transaction> {
-  const { psbt, leafHash, finalityProviderPk, covenantThreshold, covenantPks } = params;
+}): Promise<WalletPolicy> {
+  const { leafHash, finalityProviderPk, covenantThreshold, covenantPks } = params;
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
@@ -168,7 +167,7 @@ export async function signSlashingPath({
     keys.push(_formatKey(pk, isTestnet));
   }
 
-  const policy = new WalletPolicy(
+  return new WalletPolicy(
     policyName,
     // "tr(@0/**,and_v(pk_k(staker_pk), and_v(pk_k(finalityprovider_pk),multi_a(covenant_threshold, covenant_pk1, ..., covenant_pkn))))"
     `tr(@0/**,and_v(pk_k(@1/**),and_v(pk_k(@2),multi_a(${covenantThreshold}, ${Array.from(
@@ -179,19 +178,16 @@ export async function signSlashingPath({
       .join(', ')}))))`,
     keys,
   );
-
-  return signPsbt({ transport, psbt, policy });
 }
 
 export type UnbondingPolicy = 'Unbond' | undefined;
 export type UnbondingParams = {
-  psbt: Uint8Array;
   leafHash: Buffer;
   covenantThreshold: number;
   covenantPks?: string[];
 };
 
-export async function signUnbondingPath({
+export async function unbondingPathPolicy({
   policyName = 'Unbond',
   transport,
   params,
@@ -203,8 +199,8 @@ export async function signUnbondingPath({
   params: UnbondingParams;
   derivationPath: string;
   isTestnet: boolean;
-}): Promise<Transaction> {
-  const { psbt, leafHash, covenantThreshold, covenantPks } = params;
+}): Promise<WalletPolicy> {
+  const { leafHash, covenantThreshold, covenantPks } = params;
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
@@ -234,7 +230,7 @@ export async function signUnbondingPath({
     keys.push(_formatKey(pk, isTestnet));
   }
 
-  const policy = new WalletPolicy(
+  return new WalletPolicy(
     policyName,
     // "tr(@0/**,and_v(pk_k(staker_pk), multi_a(covenant_threshold, covenant_pk1, ..., covenant_pkn)))"
     `tr(@0/**,and_v(pk_k(@1/**),multi_a(${covenantThreshold}, ${Array.from(
@@ -245,18 +241,15 @@ export async function signUnbondingPath({
       .join(', ')})))`,
     keys,
   );
-
-  return signPsbt({ transport, psbt, policy });
 }
 
 export type TimelockPolicy = 'Withdraw' | undefined;
 export type TimelockParams = {
-  psbt: Uint8Array;
   leafHash: Buffer;
   timelockBlocks: number;
 };
 
-export async function signTimelockPath({
+export async function timelockPathPolicy({
   policyName = 'Withdraw',
   transport,
   params,
@@ -268,38 +261,72 @@ export async function signTimelockPath({
   params: TimelockParams;
   derivationPath: string;
   isTestnet: boolean;
-}): Promise<Transaction> {
-  const { psbt, leafHash, timelockBlocks } = params;
+}): Promise<WalletPolicy> {
+  const { leafHash, timelockBlocks } = params;
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
   keys.push(_formatKey(leafHash, isTestnet));
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
-  const policy = new WalletPolicy(
+  return new WalletPolicy(
     policyName,
     // tr(@0/**,and_v(pk_k(staker_pk), older(timelock_blocks)))
     `tr(@0/**,and_v(pk_k(@1/**), older(${timelockBlocks})))`,
     keys,
   );
-
-  return signPsbt({ transport, psbt, policy });
 }
 
-export async function signStakingTx({
+export async function stakingTxPolicy({
   transport,
-  psbt,
   derivationPath = `m/86'/0'/0'`,
 }: {
   transport: Transport;
-  psbt: Uint8Array;
   derivationPath: string;
-}): Promise<Transaction> {
+}): Promise<WalletPolicy> {
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
-  const policy = new WalletPolicy('Stake / Transfer', 'tr(@0/**)', [
+  return new WalletPolicy('Stake / Transfer', 'tr(@0/**)', [
     `[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`,
   ]);
-
-  return signPsbt({ transport, psbt, policy });
 }
+
+/* Example */
+// async function testStakingStep1() {
+//   const psbt = base64.decode(
+//     'cHNidP8BAH0CAAAAAZUPGfxRcPueN3/UdNQC64mF3lAumoEi9Gv6AgvbdVycAAAAAAD/////AsQJAAAAAAAAFgAUW+EmJNCKK0JAldfAciHDNFDRS/EEpgAAAAAAACJRICyVutUKY9E6qBjfjktoZBga2/RyCoiq+OPBI1ugik2fAAAAAAABAStQwwAAAAAAACJRIEOj7UvRXfRV9er0SUNeReHNqaiqtOoEhmW60JCFUoUyQhXAUJKbdMGgSVS3i0tgNel6XgeKWg8o7JbVR7/ums6AOsCJtgX5iDHD5SbZ6yF5ZRRSk4qMD/f16u7MthJR1dRt6/15ASDcjS+e/wxPTb3gcKSOMw78kItip2ZWjZHmWPKEsyS4eK0gH5MjVzLmTKwzVprRw9vwQTgsO3dPz7BTO5sx1MKna/mtIAruBQmxbbccmZI4pIJ9uUVSaFmxPJVIerRnJTV8mp8lrCARPDoyqdMgtyGQoEoCCg2zl27zaXJnMljpo4o2Tz3DsLogF5Ic8VbMtOc9Qo+ZbtEbJFMT434nyXisTSzCHspGcuS6IDu5PfyLYYh9dx82MOmmPpfLr8/MeFVqR034OjGg74mcuiBAr69HxP+lbehkENjke6ortvBLYE9OokMjc33cP+CS37ogeacf/XHFA+8uL5G8z8j82nlG9GU87w2fPd4geV7zufC6INIfr3jGdRoNOOa9gCi5B/8H6ahppD/IN9az+N/2EZo2uiD1GZ764/KLuCR2Fjp+RYx61EXZv/sGgtENO9sstB+Ojrog+p2ILUX0BgvbgEIYOCjNh1RPHqmXOA5YbKt31f1phze6VpzAARcgUJKbdMGgSVS3i0tgNel6XgeKWg8o7JbVR7/ums6AOsAAAAA=',
+//   );
+
+//   const transport = await getLedgerTransport();
+
+//   const leafHash = computeLeafHash(psbt);
+//   const finalityProviderPk = '1f93235732e64cac33569ad1c3dbf041382c3b774fcfb0533b9b31d4c2a76bf9';
+//   const covenantPks = [
+//     '0aee0509b16db71c999238a4827db945526859b13c95487ab46725357c9a9f25',
+//     '113c3a32a9d320b72190a04a020a0db3976ef36972673258e9a38a364f3dc3b0',
+//     '17921cf156ccb4e73d428f996ed11b245313e37e27c978ac4d2cc21eca4672e4',
+//     '3bb93dfc8b61887d771f3630e9a63e97cbafcfcc78556a474df83a31a0ef899c',
+//     '40afaf47c4ffa56de86410d8e47baa2bb6f04b604f4ea24323737ddc3fe092df',
+//     '79a71ffd71c503ef2e2f91bccfc8fcda7946f4653cef0d9f3dde20795ef3b9f0',
+//     'd21faf78c6751a0d38e6bd8028b907ff07e9a869a43fc837d6b3f8dff6119a36',
+//     'f5199efae3f28bb82476163a7e458c7ad445d9bffb0682d10d3bdb2cb41f8e8e',
+//     'fa9d882d45f4060bdb8042183828cd87544f1ea997380e586cab77d5fd698737',
+//   ];
+
+//   const params = {
+//     leafHash,
+//     finalityProviderPk,
+//     covenantThreshold: 6,
+//     covenantPks,
+//   };
+
+//   const policy = await slashingPathPolicy({
+//     policyName: 'Stake / Step 1',
+//     transport,
+//     params,
+//     derivationPath: `m/86'/1'/0'`,
+//     isTestnet: true,
+//   });
+
+//   await signPsbt({ transport, psbt, policy });
+// }
