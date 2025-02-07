@@ -141,7 +141,7 @@ export async function slashingPathPolicy({
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
-  keys.push(_formatKey(leafHash, isTestnet));
+  keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}/**]${_formatKey(leafHash, isTestnet)}`);
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
   keys.push(_formatKey(finalityProviderPk, isTestnet));
 
@@ -204,7 +204,7 @@ export async function unbondingPathPolicy({
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
-  keys.push(_formatKey(leafHash, isTestnet));
+  keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}/**]${_formatKey(leafHash, isTestnet)}`);
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
   if (covenantThreshold < 1) {
@@ -266,7 +266,7 @@ export async function timelockPathPolicy({
   const [masterFingerPrint, extendedPublicKey] = await _prepare(transport, derivationPath);
 
   const keys: string[] = [];
-  keys.push(_formatKey(leafHash, isTestnet));
+  keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}/**]${_formatKey(leafHash, isTestnet)}`);
   keys.push(`[${derivationPath.replace('m/', `${masterFingerPrint}/`)}]${extendedPublicKey}`);
 
   return new WalletPolicy(
