@@ -170,12 +170,12 @@ export async function slashingPathPolicy({
   return new WalletPolicy(
     policyName,
     // "tr(@0/**,and_v(pk_k(staker_pk), and_v(pk_k(finalityprovider_pk),multi_a(covenant_threshold, covenant_pk1, ..., covenant_pkn))))"
-    `tr(@0/**,and_v(pk_k(@1/**),and_v(pk_k(@2),multi_a(${covenantThreshold}, ${Array.from(
+    `tr(@0/**,and_v(pk_k(@1/**),and_v(pk_k(@2/**),multi_a(${covenantThreshold}, ${Array.from(
       { length },
       (_, index) => index,
     )
-      .map((n) => `@${3 + n}`)
-      .join(', ')}))))`,
+      .map((n) => `@${3 + n}/**`)
+      .join(',')}))))`,
     keys,
   );
 }
@@ -237,7 +237,7 @@ export async function unbondingPathPolicy({
       { length },
       (_, index) => index,
     )
-      .map((n) => `@${2 + n}`)
+      .map((n) => `@${2 + n}/**`)
       .join(', ')})))`,
     keys,
   );
